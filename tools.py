@@ -1,6 +1,7 @@
 import random
 import os
 import numpy as np
+import torch
 
 # Convert BRATS2021 dataset to HDF5
 
@@ -60,3 +61,36 @@ def crop_tensor(tensor):
     cropped_tensor = tensor[:, min_height:max_height+1, min_width:max_width+1, min_depth:max_depth+1]
 
     return cropped_tensor
+
+# =========================================================
+# ========================================================= Augmentations
+# =========================================================
+class RandomChannelReplace:
+    def __init__(self, mean=0, std=1, channels=4, p=0.5):
+        self.mean = mean
+        self.std = std
+        self.channels = channels
+        self.p = p
+
+    def __call__(self, image):
+        if np.random.rand() < self.p:
+            channel_to_replace = np.random.randint(self.channels) # from 0 to 3 by default 
+            noise = np.random.normal(self.mean, self.std, size=image[channel_to_replace].shape)
+            image[channel_to_replace] = torch.tensor(noise)
+        return image
+
+
+class RandomCrop3D:
+    """
+    Custom module for 3D images as torchvision does not support 3D images
+    output_size - a tuple (x, y, z)
+    """
+    def __init__(self, output_size):
+        self.output_size = output_size
+
+    def __call__(self, sample):
+        x, y, z = sample.shape[-3:]
+        x_start = np.random.randint(0, x - self.output_size[0])
+        y_start = np.random.randint(0, y - self.output_size[1])
+        z_start = np.random.randint(0, z - self.output_size[2])
+        return sample[..., x_start:x_start+self.output_size[0], y_start:y_start+self.output_size[1], z_start:z_start+self.output_size[2]]

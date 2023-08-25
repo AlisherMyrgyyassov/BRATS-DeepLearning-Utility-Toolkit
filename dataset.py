@@ -69,7 +69,7 @@ class ClearBRATS(Dataset):
 
         return scans_tensor, mask_tensor
 
-class AbstractBRATS(Dataset):
+class BRATS(Dataset):
     def __init__(self, dataset, normalized=True, add_onehot=True, is_cropped=False, augmentation_config=None):
         self.dataset = dataset
         self.is_cropped = is_cropped
@@ -208,11 +208,11 @@ def init_train_test_datasets (data_dir, train_ratio=0.8, normalized=True, is_cro
 
     torch.manual_seed(21)
     train_dataset, test_dataset = torch.utils.data.random_split(start_dataset, [train_size, test_size])
-    train_dataset = AbstractBRATS (train_dataset, normalized=normalized, is_cropped=is_cropped, add_onehot=add_onehot, augmentation_config=augmentation_config)
+    train_dataset = BRATS (train_dataset, normalized=normalized, is_cropped=is_cropped, add_onehot=add_onehot, augmentation_config=augmentation_config)
     if add_test_augmentations:
-        test_dataset = AbstractBRATS (test_dataset, normalized=normalized, is_cropped=is_cropped, add_onehot=add_onehot, augmentation_config=augmentation_config)
+        test_dataset = BRATS (test_dataset, normalized=normalized, is_cropped=is_cropped, add_onehot=add_onehot, augmentation_config=augmentation_config)
     else:
-        test_dataset = AbstractBRATS (test_dataset)
+        test_dataset = BRATS (test_dataset)
 
     return train_dataset, test_dataset
 

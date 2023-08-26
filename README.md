@@ -26,6 +26,8 @@ The toolkit includes several augmentations specifically designed for biomedical 
 * Random Channel Replacement With Gaussian Noise
 
 #  How to Use
+IMPORTANT: Make sure that you have BRATS2021 installed and use its folder as the main directory.
+
 To use the classes or functions in this toolkit, you need to import them as follows:
 
 ```
